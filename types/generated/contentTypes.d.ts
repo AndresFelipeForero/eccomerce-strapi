@@ -803,11 +803,6 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
     title: Attribute.String & Attribute.Required;
     thumbnail: Attribute.Media<'images'> & Attribute.Required;
     Slug: Attribute.UID<'api::category.category', 'title'> & Attribute.Required;
-    posts: Attribute.Relation<
-      'api::category.category',
-      'manyToMany',
-      'api::post.post'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -819,6 +814,42 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::category.category',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiContactMessageContactMessage extends Schema.CollectionType {
+  collectionName: 'contact_messages';
+  info: {
+    singularName: 'contact-message';
+    pluralName: 'contact-messages';
+    displayName: 'contact_message';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String & Attribute.Required;
+    email: Attribute.String & Attribute.Required;
+    phone: Attribute.String;
+    subject: Attribute.String & Attribute.Required;
+    message: Attribute.String & Attribute.Required;
+    slug: Attribute.UID<'api::contact-message.contact-message', 'subject'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::contact-message.contact-message',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::contact-message.contact-message',
       'oneToOne',
       'admin::user'
     > &
@@ -866,37 +897,6 @@ export interface ApiIProductIProduct extends Schema.CollectionType {
   };
 }
 
-export interface ApiPostPost extends Schema.CollectionType {
-  collectionName: 'posts';
-  info: {
-    singularName: 'post';
-    pluralName: 'posts';
-    displayName: 'Post';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    title: Attribute.String & Attribute.Required;
-    content: Attribute.Blocks & Attribute.Required;
-    thumbnail: Attribute.Media<'images' | 'videos' | 'files' | 'audios'> &
-      Attribute.Required;
-    Slug: Attribute.UID<'api::post.post', 'title'>;
-    categories: Attribute.Relation<
-      'api::post.post',
-      'manyToMany',
-      'api::category.category'
-    >;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<'api::post.post', 'oneToOne', 'admin::user'> &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<'api::post.post', 'oneToOne', 'admin::user'> &
-      Attribute.Private;
-  };
-}
-
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -916,8 +916,8 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::category.category': ApiCategoryCategory;
+      'api::contact-message.contact-message': ApiContactMessageContactMessage;
       'api::i-product.i-product': ApiIProductIProduct;
-      'api::post.post': ApiPostPost;
     }
   }
 }
